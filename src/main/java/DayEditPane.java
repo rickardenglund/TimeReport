@@ -33,7 +33,9 @@ public class DayEditPane {
         stopPicker.setMinuteStep(30);
 
         Slider pauseSlider = new Slider(0, 4, 0.5);
+        if (day.getPauseDuration().isPresent()) pauseSlider.setValue(day.getPauseDuration().get().toMinutes()/60d);
         pauseSlider.setMajorTickUnit(0.5);
+        pauseSlider.valueProperty().addListener((obs, old, newval) -> pauseSlider.setValue(roundToHalf(newval.doubleValue())) );
         pauseSlider.setShowTickLabels(true);
         pauseSlider.setSnapToTicks(true);
 
@@ -50,6 +52,10 @@ public class DayEditPane {
         day.setStart(startPicker.getLocalTime());
         day.setStop(stopPicker.getLocalTime());
         day.setPause(Duration.ofMinutes(hoursToMinutes(pauseSlider.getValue())));
+    }
+
+    private static double roundToHalf(double value) {
+        return Math.round(value*2)/2.0;
     }
 
     private static long hoursToMinutes(double hours) {

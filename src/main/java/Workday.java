@@ -59,4 +59,8 @@ public class Workday {
     public Optional<LocalTime> getStopLocalTime() {
         return stop;
     }
+
+    public Optional<Duration> getPauseDuration() {
+        return pauses;
+    }
 }
