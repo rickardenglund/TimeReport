@@ -47,25 +47,29 @@ public class MonthTable extends TableView {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (!empty && isWeekday(getTableView().getItems().get(getIndex()).getLocalDate().getDayOfWeek())) {
+                    if (!empty && !isWeekday(getTableView().getItems().get(getIndex()).getLocalDate().getDayOfWeek())) {
                         setTextFill(Color.RED);
+                    } else {
+                        setTextFill(Color.BLACK);
                     }
                     setText(item);
                 }
             };
         });
 
-        TableColumn startCol = new TableColumn("Start");
+        TableColumn startCol = new TableColumn("In");
         startCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("start"));
         TableColumn pausCol = new TableColumn("Pauser");
         pausCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("pauses"));
-        TableColumn stopCol = new TableColumn("Stop");
+        TableColumn stopCol = new TableColumn("Ut");
         stopCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("stop"));
-        getColumns().addAll(dayCol, startCol, pausCol, stopCol);
+        TableColumn totalCol = new TableColumn("Total");
+        totalCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("workedTime"));
+        getColumns().addAll(dayCol, startCol, pausCol, stopCol, totalCol);
     }
 
     public static boolean isWeekday(DayOfWeek day) {
         List<DayOfWeek> weekend = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-        return weekend.contains(day);
+        return !weekend.contains(day);
     }
 }

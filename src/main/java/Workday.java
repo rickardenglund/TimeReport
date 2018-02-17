@@ -33,10 +33,24 @@ public class Workday {
         return stop.isPresent()? stop.get().format(FORMATTER): EMPTY;
     }
 
+    public String getWorkedTime() {
+        if (start.isPresent() && stop.isPresent() && pauses.isPresent()) {
+            Duration time = Duration.between(start.get(), stop.get()).minus(pauses.get());
+            if (!time.isNegative()) {
+                return formatDuration(time);
+            }
+        }
+        return EMPTY;
+    }
+
     public String getPauses() {
         return pauses.isPresent()?
-                String.format("%d:%02d", pauses.get().toHours() , (pauses.get().getSeconds() / 60) % 60)
+                formatDuration(pauses.get())
                 : EMPTY;
+    }
+
+    public static String formatDuration(Duration duration) {
+        return String.format("%d:%02d", duration.toHours() , (duration.getSeconds() / 60) % 60);
     }
 
     @Override
