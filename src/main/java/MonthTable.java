@@ -5,8 +5,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MonthTable extends TableView {
@@ -15,11 +13,11 @@ public class MonthTable extends TableView {
 
     }
 
-    public static MonthTable create() {
+    public static MonthTable create(List<Workday> workdays) {
         MonthTable table = new MonthTable();
         table.addColumns();
 
-        ObservableList<Workday> days = FXCollections.observableArrayList(createDays());
+        ObservableList<Workday> days = FXCollections.observableArrayList(workdays);
         table.setItems(days);
 
         table.setRowFactory(tv -> {
@@ -48,13 +46,5 @@ public class MonthTable extends TableView {
         getColumns().addAll(dayCol, startcol, pausCol, stopCol);
     }
 
-    private static List<Workday> createDays() {
-        LocalDate today = LocalDate.now();
-        List<Workday> days = new ArrayList<>();
-        for (int i = 1; i <= today.lengthOfMonth(); i++) {
-            LocalDate day = LocalDate.now().withDayOfMonth(i);
-            days.add(new Workday(day));
-        }
-        return days;
-    }
+
 }

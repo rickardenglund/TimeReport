@@ -25,7 +25,11 @@ public class DayEditPane {
         HBox hBox = new HBox();
         LocalTimePicker startPicker = new LocalTimePicker();
         LocalTimePicker stopPicker = new LocalTimePicker();
+
+        if (day.getStartLocalTime().isPresent()) startPicker.setLocalTime(day.getStartLocalTime().get());
         startPicker.setMinuteStep(30);
+
+        if (day.getStopLocalTime().isPresent()) stopPicker.setLocalTime(day.getStopLocalTime().get());
         stopPicker.setMinuteStep(30);
 
         Slider pauseSlider = new Slider(0, 4, 0.5);

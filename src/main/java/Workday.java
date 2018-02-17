@@ -51,4 +51,12 @@ public class Workday {
     public void setPause(Duration pause) {
         this.pauses = Optional.of(pause);
     }
+
+    public Optional<LocalTime> getStartLocalTime() {
+        return start;
+    }
+
+    public Optional<LocalTime> getStopLocalTime() {
+        return stop;
+    }
 }
