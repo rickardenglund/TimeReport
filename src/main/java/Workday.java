@@ -21,6 +21,10 @@ public class Workday {
         return date.toString();
     }
 
+    public LocalDate getLocalDate() {
+        return date;
+    }
+
     public String getStart() {
         return start.isPresent()? start.get().format(FORMATTER): EMPTY;
     }

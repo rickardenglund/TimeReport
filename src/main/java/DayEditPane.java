@@ -2,45 +2,22 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jfxtras.scene.control.LocalTimePicker;
 
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalTime;
 
-public class DayEditPane {
-    private Workday day = new Workday(LocalDate.now());
+public class DayEditPane extends VBox{
 
-    public DayEditPane(Workday day) {
-        this.day = day;
-    }
+    private final LocalTimePicker startPicker;
+    private final LocalTimePicker stopPicker;
+    private final Slider pauseSlider;
 
     public static void update(Workday day) {
-        Pane pane = new VBox();
-        pane.getChildren().add(new Label(day.getDate()));
-
-        HBox hBox = new HBox();
-        LocalTimePicker startPicker = new LocalTimePicker();
-        LocalTimePicker stopPicker = new LocalTimePicker();
-
-        if (day.getStartLocalTime().isPresent()) startPicker.setLocalTime(day.getStartLocalTime().get());
-        startPicker.setMinuteStep(30);
-
-        if (day.getStopLocalTime().isPresent()) stopPicker.setLocalTime(day.getStopLocalTime().get());
-        stopPicker.setMinuteStep(30);
-
-        Slider pauseSlider = new Slider(0, 4, 0.5);
-        if (day.getPauseDuration().isPresent()) pauseSlider.setValue(day.getPauseDuration().get().toMinutes()/60d);
-        pauseSlider.setMajorTickUnit(0.5);
-        pauseSlider.valueProperty().addListener((obs, old, newval) -> pauseSlider.setValue(roundToHalf(newval.doubleValue())) );
-        pauseSlider.setShowTickLabels(true);
-        pauseSlider.setSnapToTicks(true);
-
-        hBox.getChildren().addAll(startPicker, pauseSlider, stopPicker);
-        pane.getChildren().add(hBox);
+        DayEditPane pane = new DayEditPane(day);
 
         Stage stage = new Stage();
         Scene scene = new Scene(pane);
@@ -49,9 +26,33 @@ public class DayEditPane {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setResizable(false);
         stage.showAndWait();
-        day.setStart(startPicker.getLocalTime());
-        day.setStop(stopPicker.getLocalTime());
-        day.setPause(Duration.ofMinutes(hoursToMinutes(pauseSlider.getValue())));
+        day.setStart(pane.startPicker.getLocalTime());
+        day.setStop(pane.stopPicker.getLocalTime());
+        day.setPause(Duration.ofMinutes(hoursToMinutes(pane.pauseSlider.getValue())));
+    }
+
+    private DayEditPane(Workday day) {
+        getChildren().add(new Label(day.getDate()));
+
+        HBox hBox = new HBox();
+        startPicker = new LocalTimePicker(LocalTime.of(7,30));
+        stopPicker = new LocalTimePicker(LocalTime.of(16, 0));
+
+        if (day.getStartLocalTime().isPresent()) startPicker.setLocalTime(day.getStartLocalTime().get());
+        startPicker.setMinuteStep(30);
+
+        if (day.getStopLocalTime().isPresent()) stopPicker.setLocalTime(day.getStopLocalTime().get());
+        stopPicker.setMinuteStep(30);
+
+        pauseSlider = new Slider(0, 3, 0.5);
+        if (day.getPauseDuration().isPresent()) pauseSlider.setValue(day.getPauseDuration().get().toMinutes()/60d);
+        pauseSlider.setMajorTickUnit(0.5);
+        pauseSlider.valueProperty().addListener((obs, old, newval) -> pauseSlider.setValue(roundToHalf(newval.doubleValue())) );
+        pauseSlider.setShowTickLabels(true);
+        pauseSlider.setSnapToTicks(true);
+
+        hBox.getChildren().addAll(startPicker, pauseSlider, stopPicker);
+        getChildren().add(hBox);
     }
 
     private static double roundToHalf(double value) {

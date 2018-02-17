@@ -1,10 +1,14 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 
+import java.time.DayOfWeek;
+import java.util.Arrays;
 import java.util.List;
 
 public class MonthTable extends TableView {
@@ -31,20 +35,37 @@ public class MonthTable extends TableView {
             });
             return row;
         });
+
         return table;
     }
 
     private void addColumns() {
         TableColumn dayCol = new TableColumn("Dag");
         dayCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("date"));
-        TableColumn startcol = new TableColumn("Start");
-        startcol.setCellValueFactory(new PropertyValueFactory<Workday, String>("start"));
+        dayCol.setCellFactory(columne -> {
+            return new TableCell<Workday, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (!empty && isWeekday(getTableView().getItems().get(getIndex()).getLocalDate().getDayOfWeek())) {
+                        setTextFill(Color.RED);
+                    }
+                    setText(item);
+                }
+            };
+        });
+
+        TableColumn startCol = new TableColumn("Start");
+        startCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("start"));
         TableColumn pausCol = new TableColumn("Pauser");
         pausCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("pauses"));
         TableColumn stopCol = new TableColumn("Stop");
         stopCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("stop"));
-        getColumns().addAll(dayCol, startcol, pausCol, stopCol);
+        getColumns().addAll(dayCol, startCol, pausCol, stopCol);
     }
 
-
+    public static boolean isWeekday(DayOfWeek day) {
+        List<DayOfWeek> weekend = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+        return weekend.contains(day);
+    }
 }
