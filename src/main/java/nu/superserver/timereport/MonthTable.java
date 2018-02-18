@@ -1,3 +1,5 @@
+package nu.superserver.timereport;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
@@ -6,23 +8,30 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
+import nu.superserver.timereport.db.DB;
 
 import java.time.DayOfWeek;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
 public class MonthTable extends TableView {
 
-    private MonthTable() {
+    private static nu.superserver.timereport.db.Month currentMonth;
+    private ObservableList<Workday> days;
 
+    private MonthTable(List<Workday> workdays) {
+        days = FXCollections.observableArrayList(workdays);
     }
 
-    public static MonthTable create(List<Workday> workdays) {
-        MonthTable table = new MonthTable();
+    public static MonthTable create(long year, Month month) {
+        currentMonth = new nu.superserver.timereport.db.Month(year, month);
+        List<Workday> workdays = DB.get(currentMonth);
+
+        MonthTable table = new MonthTable(workdays);
         table.addColumns();
 
-        ObservableList<Workday> days = FXCollections.observableArrayList(workdays);
-        table.setItems(days);
+        table.setItems(table.days);
 
         table.setRowFactory(tv -> {
             TableRow<Workday> row = new TableRow<>();
@@ -30,7 +39,7 @@ public class MonthTable extends TableView {
                 if (!row.isEmpty()) {
                     Workday day = row.getItem();
                     DayEditPane.update(day);
-                    days.set(row.getIndex(), day);
+                    table.days.set(row.getIndex(), day);
                 }
             });
             return row;
@@ -71,5 +80,9 @@ public class MonthTable extends TableView {
     public static boolean isWeekday(DayOfWeek day) {
         List<DayOfWeek> weekend = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
         return !weekend.contains(day);
+    }
+
+    public void close() {
+        DB.save(currentMonth, days);
     }
 }

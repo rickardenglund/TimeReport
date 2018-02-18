@@ -1,3 +1,5 @@
+package nu.superserver.timereport;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
