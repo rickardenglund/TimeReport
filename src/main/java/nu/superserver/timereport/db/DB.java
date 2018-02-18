@@ -12,17 +12,17 @@ import java.util.List;
 public class DB {
     public static List<Workday> get(Month month) {
         List<Workday> readWorkdays;
-        String filename = getFilename(month);
-        System.out.println("Reading " + filename);
-        try (FileReader reader = new FileReader(filename)) {
+        File file = getFile(month);
+        System.out.println("Reading " + file);
+        try (FileReader reader = new FileReader(file)) {
             readWorkdays = new GsonBuilder().create().fromJson(reader,
                     new TypeToken<List<Workday>>() {
                     }.getType());
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to find file: " + getFilename(month) + " Creating empty month");
+            System.out.println("Unable to find file: " + getFile(month) + " Creating empty month");
             readWorkdays = createDays(month);
         } catch (IOException e){
-            System.out.println("Failed to read file: " + filename);
+            System.out.println("Failed to read file: " + file.getName());
             e.printStackTrace();
             readWorkdays = createDays(month);
         }
@@ -40,9 +40,9 @@ public class DB {
     }
 
     public static void save(Month currentMonth, List<Workday> days) {
-        String filename = getFilename(currentMonth);
-        System.out.println("Saving " + filename);
-        try (PrintWriter writer = new PrintWriter(filename, "UTF-8")){
+        File file = getFile(currentMonth);
+        System.out.println("Saving " + file.getName());
+        try (PrintWriter writer = new PrintWriter(file, "UTF-8")){
             new GsonBuilder().setPrettyPrinting().create().toJson(days, writer);
         } catch (FileNotFoundException | UnsupportedEncodingException e1) {
             System.out.println("Failed to Save data: " + days);
@@ -50,7 +50,9 @@ public class DB {
         }
     }
 
-    private static String getFilename(Month currentMonth) {
-        return currentMonth.getYear() + "_" + currentMonth.getMonth();
+    private static File getFile(Month currentMonth) {
+        File file = new File ("files/" + currentMonth.getYear() + "_" + currentMonth.getMonth() + ".json");
+        file.getParentFile().mkdirs();
+        return file;
     }
 }
