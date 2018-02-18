@@ -13,20 +13,24 @@ public class DB {
     public static List<Workday> get(Month month) {
         List<Workday> readWorkdays;
         String filename = getFilename(month);
+        System.out.println("Reading " + filename);
         try (FileReader reader = new FileReader(filename)) {
             readWorkdays = new GsonBuilder().create().fromJson(reader,
                     new TypeToken<List<Workday>>() {
                     }.getType());
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to find file: " + getFilename(month) + " Creating empty month");
+            readWorkdays = createDays(month);
+        } catch (IOException e){
             System.out.println("Failed to read file: " + filename);
             e.printStackTrace();
-            readWorkdays = createDays();
+            readWorkdays = createDays(month);
         }
         return readWorkdays;
     }
 
-    private static List<Workday> createDays() {
-        LocalDate today = LocalDate.now();
+    private static List<Workday> createDays(Month month) {
+        LocalDate today = LocalDate.of(month.getYear(), month.getMonth(), 1);
         List<Workday> days = new ArrayList<>();
         for (int i = 1; i <= today.lengthOfMonth(); i++) {
             LocalDate day = LocalDate.now().withDayOfMonth(i);
@@ -37,6 +41,7 @@ public class DB {
 
     public static void save(Month currentMonth, List<Workday> days) {
         String filename = getFilename(currentMonth);
+        System.out.println("Saving " + filename);
         try (PrintWriter writer = new PrintWriter(filename, "UTF-8")){
             new GsonBuilder().setPrettyPrinting().create().toJson(days, writer);
         } catch (FileNotFoundException | UnsupportedEncodingException e1) {

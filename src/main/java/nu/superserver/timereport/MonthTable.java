@@ -24,7 +24,7 @@ public class MonthTable extends TableView {
         days = FXCollections.observableArrayList(workdays);
     }
 
-    public static MonthTable create(long year, Month month) {
+    public static MonthTable create(int year, Month month) {
         currentMonth = new nu.superserver.timereport.db.Month(year, month);
         List<Workday> workdays = DB.get(currentMonth);
 
