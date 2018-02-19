@@ -64,4 +64,5 @@ public class DayEditPane extends VBox{
     private static long hoursToMinutes(double hours) {
         return Math.round(hours * 60);
     }
+
 }

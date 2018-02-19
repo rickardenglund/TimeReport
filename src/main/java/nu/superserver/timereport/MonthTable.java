@@ -11,21 +11,20 @@ import javafx.scene.paint.Color;
 import nu.superserver.timereport.db.DB;
 
 import java.time.DayOfWeek;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
 public class MonthTable extends TableView {
 
-    private static nu.superserver.timereport.db.Month currentMonth;
+    private static nu.superserver.timereport.Month currentMonth;
     private ObservableList<Workday> days;
 
     private MonthTable(List<Workday> workdays) {
         days = FXCollections.observableArrayList(workdays);
     }
 
-    public static MonthTable create(int year, Month month) {
-        currentMonth = new nu.superserver.timereport.db.Month(year, month);
+    public static MonthTable create(Month month) {
+        currentMonth = month;
         List<Workday> workdays = DB.get(currentMonth);
 
         MonthTable table = new MonthTable(workdays);
@@ -84,5 +83,9 @@ public class MonthTable extends TableView {
 
     public void close() {
         DB.save(currentMonth, days);
+    }
+
+    public Month getMonth() {
+        return currentMonth;
     }
 }

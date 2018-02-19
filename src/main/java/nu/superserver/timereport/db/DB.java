@@ -2,6 +2,7 @@ package nu.superserver.timereport.db;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import nu.superserver.timereport.Month;
 import nu.superserver.timereport.Workday;
 
 import java.io.*;
@@ -30,10 +31,11 @@ public class DB {
     }
 
     private static List<Workday> createDays(Month month) {
-        LocalDate today = LocalDate.of(month.getYear(), month.getMonth(), 1);
+        LocalDate firstDayInMonth = LocalDate.of(month.getYear(), month.getMonth(), 1);
+        System.out.println(firstDayInMonth);
         List<Workday> days = new ArrayList<>();
-        for (int i = 1; i <= today.lengthOfMonth(); i++) {
-            LocalDate day = LocalDate.now().withDayOfMonth(i);
+        for (int i = 1; i <= firstDayInMonth.lengthOfMonth(); i++) {
+            LocalDate day = firstDayInMonth.withDayOfMonth(i);
             days.add(new Workday(day));
         }
         return days;
