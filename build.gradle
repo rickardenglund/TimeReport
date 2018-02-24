@@ -2,8 +2,16 @@ group 'TimeReport'
 version '0.1-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'nu.superserver.timereport.TimeReport'
+    }
+}
+
 
 repositories {
     mavenCentral()
