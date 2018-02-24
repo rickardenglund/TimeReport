@@ -4,27 +4,30 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import nu.superserver.timereport.Month;
 import nu.superserver.timereport.Workday;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DB {
+    public static Logger LOGGER = LogManager.getLogger(DB.class);
     public static List<Workday> get(Month month) {
         List<Workday> readWorkdays;
         File file = getFile(month);
-        System.out.println("Reading " + file);
+        LOGGER.info("Reading " + file);
         try (FileReader reader = new FileReader(file)) {
             readWorkdays = new GsonBuilder().create().fromJson(reader,
                     new TypeToken<List<Workday>>() {
                     }.getType());
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to find file: " + getFile(month) + " Creating empty month");
+            LOGGER.warn("Unable to find file: " + getFile(month) + " Creating empty month");
             readWorkdays = createDays(month);
         } catch (IOException e){
-            System.out.println("Failed to read file: " + file.getName());
-            e.printStackTrace();
+            LOGGER.error("Failed to read file: " + file.getName(), e);
             readWorkdays = createDays(month);
         }
         return readWorkdays;
@@ -32,7 +35,6 @@ public class DB {
 
     private static List<Workday> createDays(Month month) {
         LocalDate firstDayInMonth = LocalDate.of(month.getYear(), month.getMonth(), 1);
-        System.out.println(firstDayInMonth);
         List<Workday> days = new ArrayList<>();
         for (int i = 1; i <= firstDayInMonth.lengthOfMonth(); i++) {
             LocalDate day = firstDayInMonth.withDayOfMonth(i);
@@ -43,12 +45,11 @@ public class DB {
 
     public static void save(Month currentMonth, List<Workday> days) {
         File file = getFile(currentMonth);
-        System.out.println("Saving " + file.getName());
+        LOGGER.info("Saving " + file.getName());
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")){
             new GsonBuilder().setPrettyPrinting().create().toJson(days, writer);
         } catch (FileNotFoundException | UnsupportedEncodingException e1) {
-            System.out.println("Failed to Save data: " + days);
-            e1.printStackTrace();
+            LOGGER.error("Failed to Save data: " + days, e1);
         }
     }
 
