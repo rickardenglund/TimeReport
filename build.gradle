@@ -5,10 +5,11 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 sourceCompatibility = 1.8
+mainClassName = 'nu.superserver.timereport.TimeReport'
 
 jar {
     manifest {
-        attributes 'Main-Class': 'nu.superserver.timereport.TimeReport'
+        attributes 'Main-Class': mainClassName
     }
 }
 
