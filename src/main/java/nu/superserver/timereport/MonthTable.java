@@ -29,6 +29,7 @@ public class MonthTable extends TableView {
 
         MonthTable table = new MonthTable(workdays);
         table.addColumns();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         table.setItems(table.days);
 
@@ -50,7 +51,7 @@ public class MonthTable extends TableView {
     private void addColumns() {
         TableColumn dayCol = new TableColumn("Dag");
         dayCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("date"));
-        dayCol.setCellFactory(columne -> {
+        dayCol.setCellFactory(column -> {
             return new TableCell<Workday, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
@@ -67,13 +68,13 @@ public class MonthTable extends TableView {
 
         TableColumn startCol = new TableColumn("In");
         startCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("start"));
-        TableColumn pausCol = new TableColumn("Pauser");
-        pausCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("pauses"));
-        TableColumn stopCol = new TableColumn("Ut");
+        TableColumn pauseCol = new TableColumn("Pauses");
+        pauseCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("pauses"));
+        TableColumn stopCol = new TableColumn("Out");
         stopCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("stop"));
         TableColumn totalCol = new TableColumn("Total");
         totalCol.setCellValueFactory(new PropertyValueFactory<Workday, String>("workedTime"));
-        getColumns().addAll(dayCol, startCol, pausCol, stopCol, totalCol);
+        getColumns().addAll(dayCol, startCol, pauseCol, stopCol, totalCol);
     }
 
     public static boolean isWeekday(DayOfWeek day) {

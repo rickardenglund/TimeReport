@@ -20,7 +20,7 @@ public class Workday {
     }
 
     public String getDate() {
-        return date.toString();
+        return date.format(DateTimeFormatter.ofPattern("dd E"));
     }
 
     public LocalDate getLocalDate() {
