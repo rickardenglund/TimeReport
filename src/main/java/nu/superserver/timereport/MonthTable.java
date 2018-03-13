@@ -47,6 +47,9 @@ public class MonthTable extends TableView {
             return row;
         });
 
+        if (LocalDate.now().getMonth().equals(currentMonth.getMonth())) {
+            table.getSelectionModel().select(LocalDate.now().getDayOfMonth() - 1);
+        }
         return table;
     }
 
