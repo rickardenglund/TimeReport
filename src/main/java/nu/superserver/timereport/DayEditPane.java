@@ -12,10 +12,12 @@ import jfxtras.scene.control.LocalTimePicker;
 import java.time.Duration;
 import java.time.LocalTime;
 
+import static nu.superserver.timereport.TimePicker.roundToHalf;
+
 public class DayEditPane extends VBox{
 
-    private final LocalTimePicker startPicker;
-    private final LocalTimePicker stopPicker;
+    private final TimePicker startPicker;
+    private final TimePicker stopPicker;
     private final Slider pauseSlider;
 
     public static void update(Workday day) {
@@ -37,19 +39,19 @@ public class DayEditPane extends VBox{
         getChildren().add(new Label(day.getDate()));
 
         HBox hBox = new HBox();
-        startPicker = new LocalTimePicker(LocalTime.of(7,30));
-        stopPicker = new LocalTimePicker(LocalTime.of(16, 0));
+
+        startPicker = new TimePicker(LocalTime.of(7, 0));
+
+        stopPicker = new TimePicker(LocalTime.of(16, 0));
 
         if (day.getStartLocalTime().isPresent()) startPicker.setLocalTime(day.getStartLocalTime().get());
-        startPicker.setMinuteStep(30);
 
         if (day.getStopLocalTime().isPresent()) stopPicker.setLocalTime(day.getStopLocalTime().get());
-        stopPicker.setMinuteStep(30);
 
         pauseSlider = new Slider(0, 3, 0.5);
         if (day.getPauseDuration().isPresent()) pauseSlider.setValue(day.getPauseDuration().get().toMinutes()/60d);
         pauseSlider.setMajorTickUnit(0.5);
-        pauseSlider.valueProperty().addListener((obs, old, newval) -> pauseSlider.setValue(roundToHalf(newval.doubleValue())) );
+        pauseSlider.valueProperty().addListener((obs, old, newval) -> pauseSlider.setValue(roundToHalf(newval.floatValue())) );
         pauseSlider.setShowTickLabels(true);
         pauseSlider.setSnapToTicks(true);
 
@@ -57,9 +59,7 @@ public class DayEditPane extends VBox{
         getChildren().add(hBox);
     }
 
-    private static double roundToHalf(double value) {
-        return Math.round(value*2)/2.0;
-    }
+
 
     private static long hoursToMinutes(double hours) {
         return Math.round(hours * 60);
