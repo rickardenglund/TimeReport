@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import nu.superserver.timereport.db.DB;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class MonthTable extends TableView {
                     table.days.set(row.getIndex(), day);
                 }
             });
+
             return row;
         });
 
@@ -56,12 +58,22 @@ public class MonthTable extends TableView {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (!empty && !isWeekday(getTableView().getItems().get(getIndex()).getLocalDate().getDayOfWeek())) {
+                    if (empty) {
+                        return;
+                    }
+
+                    LocalDate date = getTableView().getItems().get(getIndex()).getLocalDate();
+                    if (!isWeekday(date.getDayOfWeek())) {
                         setTextFill(Color.RED);
                     } else {
                         setTextFill(Color.BLACK);
                     }
-                    setText(item);
+
+                    if (date.equals(LocalDate.now())) {
+                        setText("> " + item + " <");
+                    } else {
+                        setText(item);
+                    }
                 }
             };
         });
