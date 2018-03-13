@@ -40,7 +40,7 @@ public class DayEditPane extends VBox{
 
         HBox hBox = new HBox();
 
-        startPicker = new TimePicker(LocalTime.of(7, 0));
+        startPicker = new TimePicker(LocalTime.of(7, 30));
 
         stopPicker = new TimePicker(LocalTime.of(16, 0));
 
