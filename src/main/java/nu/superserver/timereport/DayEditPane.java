@@ -27,7 +27,7 @@ public class DayEditPane extends VBox{
         Scene scene = new Scene(pane);
         stage.setTitle(day.getDate());
         stage.setScene(scene);
-        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initModality(Modality.NONE);
         stage.setResizable(false);
         stage.showAndWait();
         day.setStart(pane.startPicker.getLocalTime());
