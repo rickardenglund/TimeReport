@@ -9,3 +9,4 @@ build/
 files/
 logs/
 current.log
+.DS_STORE
