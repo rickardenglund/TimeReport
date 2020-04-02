@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
@@ -12,6 +13,7 @@ public class MonthScene extends Scene{
 
     private static VBox vbox;
     private MonthTable currentTable;
+    private Stage stage;
 
     private MonthScene(VBox vBox) {
         super(vBox);
@@ -21,7 +23,7 @@ public class MonthScene extends Scene{
         currentTable.close();
     }
 
-    public static MonthScene createMonthScene() {
+    public static MonthScene createMonthScene(Stage stage) {
         LocalDate now = LocalDate.now();
         MonthTable table = MonthTable.create(new Month(now.getYear(), now.getMonth()));
         vbox = new VBox(table);
@@ -30,14 +32,21 @@ public class MonthScene extends Scene{
 
         HBox hbox = new HBox();
         Button previousBtn = new Button("Previous");
-        previousBtn.setOnMouseClicked(scene::previousMonth);
+        previousBtn.setOnMouseClicked(event -> {
+            scene.previousMonth(event);
+            stage.setTitle(scene.currentTable.getMonth().toString());
+        });
         hbox.getChildren().add(previousBtn);
 
         Button nextBtn = new Button("Next");
-        nextBtn.setOnMouseClicked(scene::nextMonth);
+        nextBtn.setOnMouseClicked(e -> {
+            scene.nextMonth(e);
+            stage.setTitle(scene.currentTable.getMonth().toString());
+        });
         hbox.getChildren().add(nextBtn);
 
         vbox.getChildren().add(hbox);
+        stage.setTitle(scene.currentTable.getMonth().toString());
         return scene;
     }
 

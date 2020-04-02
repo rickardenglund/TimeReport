@@ -14,10 +14,9 @@ public class TimeReport extends Application {
 
     @Override
     public void start(Stage stage) {
-        MonthScene scene = MonthScene.createMonthScene();
+        MonthScene scene = MonthScene.createMonthScene(stage);
 
         stage.setScene(scene);
-        stage.setTitle("Title");
         stage.setOnCloseRequest(e -> {
             LOGGER.info("Shutting down");
             scene.close();

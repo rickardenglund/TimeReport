@@ -28,4 +28,9 @@ public class Month {
         LocalDate newMonth = LocalDate.of(year, month,1).plusMonths(-1);
         return new Month(newMonth.getYear(), newMonth.getMonth());
     }
+
+    @Override
+    public String toString() {
+        return month.toString() + " " + year;
+    }
 }
